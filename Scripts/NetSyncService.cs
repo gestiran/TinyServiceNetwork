@@ -11,10 +11,9 @@ using Cysharp.Threading.Tasks;
 using NetworkTypes;
 using NetworkTypes.Commands;
 using NetworkTypes.Utilities;
-using TinyReactive.Extensions;
-using TinyReactive.Fields;
 using TinySerializer.Core.Misc;
 using TinyServices.Network.Buffers;
+using TinyUtilities.Extensions.Global;
 using UnityEngine;
 
 namespace TinyServices.Network {
@@ -93,7 +92,7 @@ namespace TinyServices.Network {
         
         public static void UpdateCSRF(ulong csrf) => _csrf = csrf;
         
-        internal static void AddRead(ushort group, ushort part, byte key, ActionListener<ushort, object> listener) {
+        internal static void AddRead(ushort group, ushort part, byte key, Action<ushort, object> listener) {
             for (int bufferId = 0; bufferId < _bufferRead.Count; bufferId++) {
                 if (_bufferRead[bufferId].IsCurrent(group, part, key) == false) {
                     continue;
@@ -106,7 +105,7 @@ namespace TinyServices.Network {
             _bufferRead.Add(new NetReaderBuffer(group, part, key, listener));
         }
         
-        internal static void RemoveRead(ushort group, ushort part, byte key, ActionListener<ushort, object> listener) {
+        internal static void RemoveRead(ushort group, ushort part, byte key, Action<ushort, object> listener) {
             for (int bufferId = 0; bufferId < _bufferRead.Count; bufferId++) {
                 if (_bufferRead[bufferId].IsCurrent(group, part, key) == false) {
                     continue;
@@ -227,13 +226,13 @@ namespace TinyServices.Network {
                                 if (read.group == command.group && read.key == command.key) {
                                     if (read.part == 0) {
                                         try {
-                                            read.listeners.Invoke(command.part, value);
+                                            read.listeners.InvokeSafe(command.part, value);
                                         } catch (Exception exception) {
                                             Debug.LogWarning(new Exception("NetService.Sync - Listener.Invoke", exception));
                                         }
                                     } else if (read.part == command.part) {
                                         try {
-                                            read.listeners.Invoke(command.part, value);
+                                            read.listeners.InvokeSafe(command.part, value);
                                         } catch (Exception exception) {
                                             Debug.LogWarning(new Exception("NetService.Sync - Listener.Invoke", exception));
                                         }

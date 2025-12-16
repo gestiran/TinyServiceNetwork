@@ -4,8 +4,7 @@
 using System;
 using System.Collections.Generic;
 using TinyReactive;
-using TinyReactive.Extensions;
-using TinyReactive.Fields;
+using TinyUtilities.Extensions.Global;
 
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
@@ -24,7 +23,7 @@ namespace TinyServices.Network.ReactiveFields {
         public readonly ushort part;
         public readonly byte key;
         
-        private readonly List<ActionListener<T>> _listenersValue;
+        private readonly List<Action<T>> _listenersValue;
         
         public NetListener(ushort group, ushort part, byte key, T value = default) {
             this.group = group;
@@ -33,21 +32,21 @@ namespace TinyServices.Network.ReactiveFields {
             
             _value = value;
             
-            _listenersValue = new List<ActionListener<T>>();
+            _listenersValue = new List<Action<T>>();
         }
         
         private void SetValue(ushort _, object obj) {
             if (obj == null) {
                 _value = default;
-                _listenersValue.Invoke(_value);
+                _listenersValue.InvokeSafe(_value);
             } else if (obj is T newValue) {
                 _value = newValue;
-                _listenersValue.Invoke(newValue);
+                _listenersValue.InvokeSafe(newValue);
             }
         }
         
         // Resharper disable Unity.ExpensiveCode
-        public void AddListener(ActionListener<T> listener) {
+        public void AddListener(Action<T> listener) {
             if (_listenersValue.Count == 0) {
                 NetSyncService.AddRead(group, part, key, SetValue);
             }
@@ -56,13 +55,13 @@ namespace TinyServices.Network.ReactiveFields {
         }
         
         // Resharper disable Unity.ExpensiveCode
-        public void AddListener(ActionListener<T> listener, UnloadPool unload) {
+        public void AddListener(Action<T> listener, UnloadPool unload) {
             AddListener(listener);
             unload.Add(new UnloadAction(() => RemoveListener(listener)));
         }
         
         // Resharper disable Unity.ExpensiveCode
-        public void RemoveListener(ActionListener<T> listener) {
+        public void RemoveListener(Action<T> listener) {
             _listenersValue.Remove(listener);
             
             if (_listenersValue.Count == 0) {
