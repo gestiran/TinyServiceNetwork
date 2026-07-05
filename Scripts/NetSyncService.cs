@@ -13,7 +13,7 @@ using NetworkTypes.Commands;
 using NetworkTypes.Utilities;
 using TinySerializer.Core.Misc;
 using TinyServices.Network.Buffers;
-using TinyUtilities.Extensions.Global;
+using TinyUtilities.Extensions;
 using UnityEngine;
 
 namespace TinyServices.Network {

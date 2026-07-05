@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using TinyReactive;
-using TinyUtilities.Extensions.Global;
+using TinyUtilities.Extensions;
 
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
