@@ -2,7 +2,9 @@
     "name": "TinyServices.Network.Runtime",
     "rootNamespace": "TinyServices.Network",
     "references": [
+        "TinyUtilities.Core",
         "TinyUtilities.Runtime",
+        "TinyReactive.Core",
         "UniTask"
     ],
     "includePlatforms": [],
@@ -10,8 +12,6 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "com.ges.tinyutilities.dll",
-        "com.ges.tinyreactive.dll",
         "Sirenix.OdinInspector.Attributes.dll",
         "TinySerializer.dll",
         "NetworkTypes.dll"
